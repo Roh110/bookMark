@@ -319,7 +319,311 @@ A single book can belong to many users while each user maintains their own:
 
 Example REST API endpoints:
 
-| Method | Endpoint              | Description   |
-| ------ | --------------------- | ------------- |
-| `POST` | `/api/auth/register/` | Register user |
-| `      |                       |               |
+| Method  | Endpoint                   | Description             |
+| ------- | -------------------------- | ----------------------- |
+| `POST`  | `/api/auth/register/`      | Register user           |
+| `POST`  | `/api/auth/login/`         | Login                   |
+| `GET`   | `/api/books/search/`       | Search books            |
+| `POST`  | `/api/library/`            | Add book to library     |
+| `GET`   | `/api/library/`            | Get personal library    |
+| `PATCH` | `/api/library/{id}/`       | Update reading progress |
+| `GET`   | `/api/library/{id}/notes/` | Get book notes          |
+| `POST`  | `/api/notes/`              | Create note             |
+| `PATCH` | `/api/notes/{id}/`         | Update note             |
+| `GET`   | `/api/notes/search/`       | Search personal notes   |
+| `POST`  | `/api/reviews/`            | Create review           |
+| `GET`   | `/api/vocabulary/`         | Get saved vocabulary    |
+| `POST`  | `/api/vocabulary/`         | Save vocabulary         |
+| `GET`   | `/api/analytics/`          | Get reading analytics   |
+
+---
+
+# 🚀 Future AI Features
+
+AI will be introduced only after the core reading-management system is stable.
+
+### 🤖 AI Reading Assistant
+
+Users could ask questions about their own saved notes.
+
+Example:
+
+> "What did I learn about courage from the books I read?"
+
+The system could retrieve relevant notes and provide a summarized response.
+
+### 🔍 Semantic Search
+
+Instead of only searching exact words:
+
+```text
+courage
+```
+
+the system could understand related concepts such as:
+
+```text
+bravery
+fear
+taking risks
+standing up for others
+overcoming uncertainty
+```
+
+and retrieve relevant personal notes.
+
+### 🧠 Automatic Note Organization
+
+AI could help categorize notes into:
+
+* Character
+* Theme
+* Lesson
+* Plot
+* Reflection
+* Question
+* Favorite Scene
+
+### 📚 Cross-Book Connections
+
+The application could identify relationships between ideas from different books.
+
+For example:
+
+```text
+Book A
+   │
+   └── Courage
+          │
+          ├── Book B → Leadership
+          │
+          └── Book C → Fear
+```
+
+This would make the application significantly different from a conventional reading tracker.
+
+---
+
+# 🔐 Privacy
+
+Personal reading notes should be **private by default**.
+
+The application should ensure:
+
+* Users can access only their own private notes
+* User-specific API endpoints enforce ownership
+* Passwords are securely hashed
+* Sensitive configuration is stored using environment variables
+* Public sharing is explicitly controlled by the user
+
+---
+
+# 📈 Development Roadmap
+
+## Phase 1 — MVP
+
+* [ ] Project setup
+* [ ] Database design
+* [ ] User authentication
+* [ ] Book search
+* [ ] Personal library
+* [ ] Reading status
+* [ ] Reading progress
+* [ ] Notes
+* [ ] Summaries
+* [ ] Favorite scenes
+* [ ] Reviews
+* [ ] Vocabulary
+
+## Phase 2 — Productivity
+
+* [ ] Advanced search
+* [ ] Tags
+* [ ] Reading statistics
+* [ ] Reading goals
+* [ ] Vocabulary flashcards
+* [ ] Chapter/page references
+* [ ] Export personal notes
+* [ ] Responsive mobile UI
+
+## Phase 3 — Intelligence
+
+* [ ] AI-assisted summaries
+* [ ] Semantic search
+* [ ] Personal reading assistant
+* [ ] Cross-book concept discovery
+* [ ] AI-generated vocabulary explanations
+* [ ] Personalized reading insights
+
+---
+
+# 🧪 Testing
+
+The project will include tests for:
+
+* User authentication
+* Book creation and retrieval
+* Library ownership
+* Reading progress
+* Notes CRUD operations
+* Review creation
+* Vocabulary management
+* API permissions
+* Search functionality
+
+Special attention will be given to **authorization**, ensuring one user cannot access another user's private reading data.
+
+---
+
+# ⚙️ Local Development
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/personal-book-library.git
+
+cd personal-book-library
+```
+
+### 2. Create Python virtual environment
+
+```bash
+python -m venv .venv
+```
+
+### 3. Activate the environment
+
+Windows PowerShell:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+### 4. Install backend dependencies
+
+```bash
+cd backend
+
+pip install -r requirements.txt
+```
+
+### 5. Configure environment variables
+
+Create a `.env` file:
+
+```env
+DEBUG=True
+
+SECRET_KEY=your-secret-key
+
+DATABASE_NAME=book_library
+DATABASE_USER=postgres
+DATABASE_PASSWORD=your-password
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+
+BOOK_API_KEY=your-api-key
+```
+
+Never commit the `.env` file to GitHub.
+
+### 6. Run migrations
+
+```bash
+python manage.py migrate
+```
+
+### 7. Create an admin user
+
+```bash
+python manage.py createsuperuser
+```
+
+### 8. Start Django
+
+```bash
+python manage.py runserver
+```
+
+### 9. Start the frontend
+
+Open another terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+# 🌱 Environment Variables
+
+The following configuration should be stored in `.env`:
+
+```text
+SECRET_KEY
+DATABASE_NAME
+DATABASE_USER
+DATABASE_PASSWORD
+DATABASE_HOST
+DATABASE_PORT
+BOOK_API_KEY
+AI_API_KEY
+```
+
+A `.env.example` file should be included in the repository so developers know which variables are required.
+
+---
+
+# 📌 Why This Project?
+
+This project explores how a traditional digital library can evolve into a **personal knowledge-management system for readers**.
+
+Instead of simply tracking:
+
+> 📚 "I read this book."
+
+the goal is to capture:
+
+> 📝 "This is what I thought about it."
+
+> 💡 "This is what I learned."
+
+> 🎬 "This is the scene I want to remember."
+
+> 🧠 "This is a concept I discovered."
+
+> 🔎 "This is where I can find that idea again."
+
+---
+
+# 🎯 Project Goal
+
+The ultimate goal is to build a personal digital space where a reader's **books, thoughts, memories, vocabulary, and knowledge** remain connected.
+
+**Read → Record → Organize → Remember → Rediscover**
+
+---
+
+# 👨‍💻 Author
+
+**Your Name**
+
+Built as a full-stack software project exploring:
+
+* Full-stack web development
+* REST API architecture
+* Database design
+* Authentication & authorization
+* Search systems
+* Personal knowledge management
+* AI-assisted information retrieval
+
+---
+
+# ⭐ Future Vision
+
+> **Your books are not just a collection.
+> They're a record of what you've learned.**
+
