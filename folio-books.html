@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Folio · Your reading diary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --plum-950: #1a0820;
+    --plum-900: #260f30;
+    --plum-800: #3a1549;
+    --plum-700: #54206a;
+    --berry: #d81b60;
+    --rose: #ff4d6d;
+    --coral: #ff8a65;
+    --lilac: #c9a7ff;
+    --cream: #fff4f7;
+    --muted: #c9b3d6;
+    --radius: 14px;
+    --shadow: 0 18px 40px -18px rgba(216, 27, 96, .55);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Manrope", system-ui, sans-serif;
+    color: var(--cream);
+    background:
+      radial-gradient(900px 500px at 10% -10%, rgba(255, 77, 109, .35), transparent 60%),
+      radial-gradient(800px 600px at 110% 10%, rgba(201, 167, 255, .25), transparent 60%),
+      linear-gradient(180deg, var(--plum-900), var(--plum-950) 70%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; border-radius: 8px; }
+
+  /* ---------- Header ---------- */
+  header {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 14px clamp(16px, 4vw, 48px);
+    background: rgba(26, 8, 32, .8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
+  }
+  .brand {
+    font-family: "Fraunces", serif; font-weight: 800; font-size: 1.6rem;
+    background: linear-gradient(90deg, var(--coral), var(--rose) 50%, var(--lilac));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-decoration: none; margin-right: auto;
+  }
+  .search {
+    flex: 1 1 260px; max-width: 380px;
+    background: rgba(255, 255, 255, .07);
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 999px; padding: 10px 18px;
+  }
+  .search::placeholder { color: var(--muted); }
+
+  .btn {
+    cursor: pointer; border: 0; border-radius: 999px;
+    padding: 11px 20px; font-weight: 700;
+    background: linear-gradient(120deg, var(--rose), var(--berry));
+    color: #fff; box-shadow: var(--shadow);
+    transition: transform .15s ease, filter .15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+  .btn.ghost {
+    background: transparent; box-shadow: none;
+    border: 1px solid rgba(255, 255, 255, .2); color: var(--cream);
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: clamp(32px, 6vw, 72px) clamp(16px, 4vw, 48px) 24px;
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: end;
+  }
+  .hero h1 {
+    font-family: "Fraunces", serif; font-weight: 800;
+    font-size: clamp(2.4rem, 6vw, 4.4rem); line-height: 1.02;
+    margin: 0 0 14px; letter-spacing: -.02em;
+  }
+  .hero h1 em { font-weight: 500; color: var(--coral); }
+  .hero p { color: var(--muted); max-width: 46ch; margin: 0 0 22px; font-size: 1.05rem; }
+  .stats { display: flex; gap: 12px; flex-wrap: wrap; }
+  .stat {
+    flex: 1 1 130px;
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: var(--radius); padding: 16px 18px;
+  }
+  .stat b { display: block; font-family: "Fraunces", serif; font-size: 2rem; line-height: 1; }
+  .stat span { font-size: .85rem; color: var(--muted); }
+
+  /* spines shelf decoration */
+  .spines { display: flex; align-items: flex-end; gap: 4px; height: 180px; justify-content: flex-end; }
+  .spine {
+    width: 26px; border-radius: 4px 4px 2px 2px;
+    box-shadow: inset -3px 0 0 rgba(0, 0, 0, .2);
+  }
+
+  /* ---------- Tabs & grid ---------- */
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    padding: 12px clamp(16px, 4vw, 48px) 20px;
+  }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tab {
+    cursor: pointer; background: transparent; border: 1px solid rgba(255, 255, 255, .15);
+    border-radius: 999px; padding: 8px 16px; color: var(--muted); font-weight: 700;
+  }
+  .tab[aria-selected="true"] {
+    background: var(--cream); color: var(--plum-900); border-color: var(--cream);
+  }
+  .count { color: var(--muted); font-size: .9rem; }
+
+  .grid {
+    display: grid; gap: 22px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    padding: 0 clamp(16px, 4vw, 48px) 80px;
+  }
+  .book {
+    cursor: pointer; background: none; border: 0; padding: 0; text-align: left;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .cover {
+    aspect-ratio: 2 / 3; border-radius: 6px 12px 12px 6px; position: relative; overflow: hidden;
+    padding: 16px 14px; display: flex; flex-direction: column; justify-content: space-between;
+    box-shadow: 0 14px 28px -12px rgba(0, 0, 0, .7), inset 8px 0 0 rgba(0, 0, 0, .18);
+    transition: transform .2s ease;
+  }
+  .cover::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(120deg, rgba(255, 255, 255, .22), transparent 40%);
+    pointer-events: none;
+  }
+  .book:hover .cover { transform: translateY(-4px) rotate(-1deg); }
+  .cover h3 {
+    margin: 0; font-family: "Fraunces", serif; font-weight: 800; font-size: 1.15rem; line-height: 1.1;
+    color: #fff; text-shadow: 0 2px 10px rgba(0, 0, 0, .35); position: relative; z-index: 1;
+  }
+  .cover small { color: rgba(255, 255, 255, .85); font-weight: 700; position: relative; z-index: 1; }
+  .meta { font-size: .85rem; color: var(--muted); }
+  .meta .stars { color: var(--coral); letter-spacing: 1px; }
+
+  .empty {
+    grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--muted);
+    border: 1px dashed rgba(255, 255, 255, .2); border-radius: var(--radius);
+  }
+  .empty h2 { font-family: "Fraunces", serif; color: var(--cream); margin: 0 0 8px; }
+
+  /* ---------- Dialogs ---------- */
+  dialog {
+    width: min(560px, calc(100vw - 32px));
+    background: var(--plum-800); color: var(--cream);
+    border: 1px solid rgba(255, 255, 255, .1); border-radius: 22px; padding: 0;
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .8);
+  }
+  dialog::backdrop { background: rgba(10, 2, 14, .7); backdrop-filter: blur(4px); }
+  .dlg { padding: 28px; display: grid; gap: 16px; }
+  .dlg-head { display: flex; gap: 18px; align-items: center; }
+  .dlg-head .cover { width: 110px; flex: none; }
+  .dlg h2 { font-family: "Fraunces", serif; margin: 0; font-size: 1.6rem; line-height: 1.1; }
+  .dlg .sub { color: var(--muted); margin: 4px 0 0; }
+  label { display: grid; gap: 6px; font-weight: 700; font-size: .9rem; color: var(--muted); }
+  input, select, textarea {
+    background: rgba(0, 0, 0, .25); border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 12px; padding: 11px 14px; width: 100%;
+  }
+  textarea { min-height: 96px; resize: vertical; }
+  .rate { display: flex; gap: 4px; }
+  .rate button {
+    cursor: pointer; background: none; border: 0; font-size: 2rem; line-height: 1;
+    color: rgba(255, 255, 255, .25); padding: 2px; transition: transform .12s ease;
+  }
+  .rate button.on { color: var(--coral); }
+  .rate button:hover { transform: scale(1.15); }
+  .actions { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .actions .group { display: flex; gap: 10px; }
+  .danger { color: #ff9aa9; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(120%);
+    background: var(--cream); color: var(--plum-900); font-weight: 700;
+    padding: 12px 20px; border-radius: 999px; box-shadow: var(--shadow);
+    transition: transform .3s ease; z-index: 30;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; }
+    .spines { height: 110px; }
+    .spine { width: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="#">Folio</a>
+  <input class="search" id="search" type="search" placeholder="Search your books or authors" aria-label="Search books">
+  <button class="btn" id="openAdd">+ Log a book</button>
+</header>
+
+<section class="hero">
+  <div>
+    <h1>Every book you read, <em>kept in one place.</em></h1>
+    <p>Log what you finish, rate it, and keep a diary of the stories that stayed with you.</p>
+    <div class="stats">
+      <div class="stat"><b id="statRead">0</b><span>books read</span></div>
+      <div class="stat"><b id="statPages">0</b><span>pages turned</span></div>
+      <div class="stat"><b id="statAvg">–</b><span>average rating</span></div>
+    </div>
+  </div>
+  <div class="spines" id="spines" aria-hidden="true"></div>
+</section>
+
+<div class="toolbar">
+  <div class="tabs" role="tablist" aria-label="Shelves">
+    <button class="tab" role="tab" data-shelf="all" aria-selected="true">All</button>
+    <button class="tab" role="tab" data-shelf="reading" aria-selected="false">Reading</button>
+    <button class="tab" role="tab" data-shelf="read" aria-selected="false">Read</button>
+    <button class="tab" role="tab" data-shelf="want" aria-selected="false">Want to read</button>
+  </div>
+  <span class="count" id="count"></span>
+</div>
+
+<main class="grid" id="grid"></main>
+
+<!-- Book detail dialog -->
+<dialog id="detail">
+  <form method="dialog" class="dlg" id="detailForm">
+    <div class="dlg-head">
+      <div class="cover" id="dCover"></div>
+      <div>
+        <h2 id="dTitle"></h2>
+        <p class="sub" id="dAuthor"></p>
+        <p class="sub" id="dPages"></p>
+      </div>
+    </div>
+    <div>
+      <span style="font-weight:700;font-size:.9rem;color:var(--muted)">Your rating</span>
+      <div class="rate" id="dRate" role="radiogroup" aria-label="Rating"></div>
+    </div>
+    <label>Shelf
+      <select id="dShelf">
+        <option value="want">Want to read</option>
+        <option value="reading">Reading</option>
+        <option value="read">Read</option>
+      </select>
+    </label>
+    <label>Your review
+      <textarea id="dReview" placeholder="What stayed with you?"></textarea>
+    </label>
+    <div class="actions">
+      <button type="button" class="btn ghost danger" id="dDelete">Remove</button>
+      <div class="group">
+        <button type="button" class="btn ghost" id="dCancel">Cancel</button>
+        <button type="button" class="btn" id="dSave">Save</button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<!-- Add book dialog -->
+<dialog id="add">
+  <form method="dialog" class="dlg" id="addForm">
+    <h2>Log a book</h2>
+    <label>Title
+      <input id="aTitle" required maxlength="120" placeholder="e.g. The Left Hand of Darkness">
+    </label>
+    <label>Author
+      <input id="aAuthor" required maxlength="80" placeholder="e.g. Ursula K. Le Guin">
+    </label>
+    <div class="row2">
+      <label>Pages
+        <input id="aPages" type="number" min="1" max="5000" placeholder="320">
+      </label>
+      <label>Shelf
+        <select id="aShelf">
+          <option value="want">Want to read</option>
+          <option value="reading">Reading</option>
+          <option value="read">Read</option>
+        </select>
+      </label>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="aCancel">Cancel</button>
+      <button type="submit" class="btn">Add to diary</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  // ---------- Data ----------
+  const PALETTES = [
+    ["#ff4d6d", "#7a0c3a"], ["#c9a7ff", "#4b1f8a"], ["#ff8a65", "#8e2a1c"],
+    ["#d81b60", "#3a0a2a"], ["#f48fb1", "#6a1f57"], ["#b388ff", "#2c0f66"],
+    ["#ffab91", "#6b2b4f"], ["#e040fb", "#41085c"]
+  ];
+
+  const SEED = [
+    { id: 1, title: "The Left Hand of Darkness", author: "Ursula K. Le Guin", pages: 304, shelf: "read", rating: 5, review: "Quietly devastating and endlessly thoughtful." },
+    { id: 2, title: "Piranesi", author: "Susanna Clarke", pages: 245, shelf: "reading", rating: 0, review: "" },
+    { id: 3, title: "Tomorrow, and Tomorrow, and Tomorrow", author: "Gabrielle Zevin", pages: 416, shelf: "want", rating: 0, review: "" },
+    { id: 4, title: "Circe", author: "Madeline Miller", pages: 393, shelf: "read", rating: 4, review: "" }
+  ];
+
+  let books = loadBooks();
+  let nextId = Math.max(0, ...books.map(b => b.id)) + 1;
+  let currentShelf = "all";
+  let editingId = null;
+
+  function loadBooks() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("folio-books"));
+      if (Array.isArray(saved) && saved.length) return saved;
+    } catch (e) { /* storage unavailable: fall back to seed */ }
+    return structuredClone(SEED);
+  }
+  function saveBooks() {
+    try { localStorage.setItem("folio-books", JSON.stringify(books)); } catch (e) { /* ignore */ }
+  }
+
+  // ---------- Helpers ----------
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const hash = s => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const paletteFor = b => PALETTES[hash(b.title) % PALETTES.length];
+  const SHELF_LABEL = { want: "Want to read", reading: "Reading", read: "Read" };
+
+  function starsText(n) {
+    return n ? "★".repeat(n) + "☆".repeat(5 - n) : "Not rated";
+  }
+  function toast(msg) {
+    const t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => t.classList.remove("show"), 2200);
+  }
+
+  // ---------- Rendering ----------
+  function renderStats() {
+    const read = books.filter(b => b.shelf === "read");
+    const pages = read.reduce((sum, b) => sum + (Number(b.pages) || 0), 0);
+    const rated = read.filter(b => b.rating > 0);
+    const avg = rated.length ? (rated.reduce((s, b) => s + b.rating, 0) / rated.length).toFixed(1) : "–";
+    $("statRead").textContent = read.length;
+    $("statPages").textContent = pages.toLocaleString();
+    $("statAvg").textContent = avg;
+
+    const recent = books.slice(-14);
+    $("spines").innerHTML = recent.map(b => {
+      const [c1, c2] = paletteFor(b);
+      const h = 90 + (hash(b.author) % 90);
+      return `<div class="spine" style="height:${h}px;background:linear-gradient(${c1},${c2})"></div>`;
+    }).join("");
+  }
+
+  function renderGrid() {
+    const q = $("search").value.trim().toLowerCase();
+    const list = books.filter(b =>
+      (currentShelf === "all" || b.shelf === currentShelf) &&
+      (!q || b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q))
+    );
+
+    $("count").textContent = `${list.length} ${list.length === 1 ? "book" : "books"}`;
+
+    if (!list.length) {
+      $("grid").innerHTML = `
+        <div class="empty">
+          <h2>${q ? "No matches yet" : "Nothing on this shelf"}</h2>
+          <p>${q ? "Try a different title or author." : "Log a book to start your diary."}</p>
+        </div>`;
+      return;
+    }
+
+    $("grid").innerHTML = list.map(b => {
+      const [c1, c2] = paletteFor(b);
+      const stars = b.rating ? `<span class="stars">${"★".repeat(b.rating)}</span>` : "";
+      return `
+        <button class="book" data-id="${b.id}" aria-label="Open ${esc(b.title)}">
+          <div class="cover" style="background:linear-gradient(160deg,${c1},${c2})">
+            <h3>${esc(b.title)}</h3>
+            <small>${esc(b.author)}</small>
+          </div>
+          <div class="meta">${stars || SHELF_LABEL[b.shelf]}</div>
+        </button>`;
+    }).join("");
+  }
+
+  function renderAll() {
+    renderStats();
+    renderGrid();
+    saveBooks();
+  }
+
+  // ---------- Detail dialog ----------
+  let draftRating = 0;
+
+  function drawRating() {
+    $("dRate").innerHTML = [1, 2, 3, 4, 5].map(n =>
+      `<button type="button" role="radio" aria-checked="${n === draftRating}" aria-label="${n} star${n > 1 ? "s" : ""}" data-n="${n}" class="${n <= draftRating ? "on" : ""}">★</button>`
+    ).join("");
+  }
+
+  function openDetail(id) {
+    const b = books.find(x => x.id === id);
+    if (!b) return;
+    editingId = id;
+    const [c1, c2] = paletteFor(b);
+    $("dCover").style.background = `linear-gradient(160deg,${c1},${c2})`;
+    $("dCover").innerHTML = `<h3 style="font-size:.95rem">${esc(b.title)}</h3>`;
+    $("dTitle").textContent = b.title;
+    $("dAuthor").textContent = `by ${b.author}`;
+    $("dPages").textContent = b.pages ? `${b.pages} pages` : "Page count unknown";
+    draftRating = b.rating || 0;
+    drawRating();
+    $("dShelf").value = b.shelf;
+    $("dReview").value = b.review || "";
+    $("detail").showModal();
+  }
+
+  $("dRate").addEventListener("click", e => {
+    const btn = e.target.closest("button[data-n]");
+    if (!btn) return;
+    const n = Number(btn.dataset.n);
+    draftRating = draftRating === n ? 0 : n; // tap again to clear
+    drawRating();
+  });
+
+  $("dSave").addEventListener("click", () => {
+    const b = books.find(x => x.id === editingId);
+    if (!b) return;
+    b.rating = draftRating;
+    b.shelf = $("dShelf").value;
+    b.review = $("dReview").value.trim();
+    $("detail").close();
+    renderAll();
+    toast("Saved to your diary");
+  });
+
+  $("dDelete").addEventListener("click", () => {
+    if (!confirm("Remove this book from your diary?")) return;
+    books = books.filter(x => x.id !== editingId);
+    $("detail").close();
+    renderAll();
+    toast("Book removed");
+  });
+
+  $("dCancel").addEventListener("click", () => $("detail").close());
+
+  // ---------- Add dialog ----------
+  $("openAdd").addEventListener("click", () => {
+    $("addForm").reset();
+    $("add").showModal();
+    $("aTitle").focus();
+  });
+  $("aCancel").addEventListener("click", () => $("add").close());
+
+  $("addForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const title = $("aTitle").value.trim();
+    const author = $("aAuthor").value.trim();
+    if (!title || !author) return;
+    books.push({
+      id: nextId++,
+      title,
+      author,
+      pages: Number($("aPages").value) || 0,
+      shelf: $("aShelf").value,
+      rating: 0,
+      review: ""
+    });
+    $("add").close();
+    renderAll();
+    toast(`Added “${title}”`);
+  });
+
+  // ---------- Events ----------
+  $("grid").addEventListener("click", e => {
+    const card = e.target.closest(".book");
+    if (card) openDetail(Number(card.dataset.id));
+  });
+
+  document.querySelector(".tabs").addEventListener("click", e => {
+    const tab = e.target.closest(".tab");
+    if (!tab) return;
+    currentShelf = tab.dataset.shelf;
+    document.querySelectorAll(".tab").forEach(t =>
+      t.setAttribute("aria-selected", String(t === tab)));
+    renderGrid();
+  });
+
+  $("search").addEventListener("input", renderGrid);
+
+  renderAll();
+</script>
+</body>
+</html>
