@@ -606,10 +606,6 @@ The ultimate goal is to build a personal digital space where a reader's **books,
 
 ---
 
-# 👨‍💻 Author
-
-**Your Name**
-
 Built as a full-stack software project exploring:
 
 * Full-stack web development
