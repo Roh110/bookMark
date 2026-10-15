@@ -3,3 +3,6 @@ node_modules/
 folio.db
 folio.db-wal
 folio.db-shm
+folio.db
+folio.db-wal
+folio.db-shm
