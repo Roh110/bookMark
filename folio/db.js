@@ -4,6 +4,9 @@ const fs = require('fs');
 const { DatabaseSync } = require('node:sqlite');
 
 const dbFile = path.resolve(__dirname, process.env.DB_FILE || './folio.db');
+fs.mkdirSync(path.dirname(dbFile), { recursive: true });
+console.log(`Using database at ${dbFile}`);
+
 const db = new DatabaseSync(dbFile);
 
 db.exec('PRAGMA journal_mode = WAL');
