@@ -1,0 +1,5 @@
+node_modules/
+.env
+folio.db
+folio.db-wal
+folio.db-shm
