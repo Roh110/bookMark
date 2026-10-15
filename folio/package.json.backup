@@ -1,0 +1,15 @@
+{
+  "name": "folio",
+  "version": "1.0.0",
+  "description": "Folio: a reading diary for books",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}
