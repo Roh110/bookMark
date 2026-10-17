@@ -6,8 +6,6 @@ A personal reading and knowledge-management application that helps readers build
 
 Unlike a traditional book-tracking application, this project focuses on **helping users remember what they read and retrieve what they learned**.
 
----
-
 ## 🌟 Overview
 
 Readers often finish a book but later struggle to remember:
