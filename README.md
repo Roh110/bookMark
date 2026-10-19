@@ -21,7 +21,6 @@ Readers often finish a book but later struggle to remember:
 
 Users can search for a book, add it to their personal library, track their reading progress, and create a personal knowledge record around every book they read.
 
----
 
 ## ✨ Core Features
 
